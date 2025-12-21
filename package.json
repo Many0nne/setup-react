@@ -14,7 +14,7 @@
     "coverage": "vitest run --coverage",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky || exit 0"
   },
   "dependencies": {
     "react": "^19.2.0",
