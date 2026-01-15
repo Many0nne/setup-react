@@ -1,117 +1,100 @@
-# React + TypeScript + Vite
+# React-setup-front
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ce dépôt contient le client frontend du projet : une application React en TypeScript créée avec Vite, incluant des pages d'authentification simples (connexion/inscription) qui communiquent avec l'API backend `NodeJS-setup-back`.
 
-Currently, two official plugins are available:
+## Présentation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework** : React avec TypeScript
+- **Bundler** : Vite (serveur dev rapide et build optimisé)
+- **Styles** : CSS local / fichiers CSS simples (voir `src/App.css`, `src/index.css`)
+- **État & auth** : contexte léger dans `src/context/AuthContext.tsx` et hooks dans `src/hooks`
+- **Client API** : `src/api/client.ts` et `src/api/auth.ts` pour les appels HTTP vers le backend
 
-## React Compiler
+## Fonctionnalités
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Formulaires de connexion et d'inscription (`src/components/LoginForm.tsx`, `src/components/RegisterForm.tsx`)
+- Contexte d'authentification pour stocker le token et les informations utilisateur
+- Mécanismes pour appeler des routes protégées (ex. `GET /api/users/me`)
+- Exemples de tests avec `vitest` / React Testing Library sous `src/test`
 
-## Expanding the ESLint configuration
+## Démarrage (local)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Installer les dépendances :
 
-````js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    # React-setup-front
+```
+npm install
+```
 
-    Ce dépôt contient le client frontend du projet : une application React en TypeScript créée avec Vite, incluant des pages d'authentification simples (connexion/inscription) qui communiquent avec l'API backend `NodeJS-setup-back`.
+2. Lancer le serveur de développement :
 
-    ## Présentation
+```
+npm run dev
+```
 
-    - **Framework** : React avec TypeScript
-    - **Bundler** : Vite (serveur dev rapide et build optimisé)
-    - **Styles** : CSS local / fichiers CSS simples (voir `src/App.css`, `src/index.css`)
-    - **État & auth** : contexte léger dans `src/context/AuthContext.tsx` et hooks dans `src/hooks`
-    - **Client API** : `src/api/client.ts` et `src/api/auth.ts` pour les appels HTTP vers le backend
+3. Ouvrir l'application dans le navigateur (Vite affichera l'URL, généralement `http://localhost:5173`).
 
-    ## Fonctionnalités
+## Intégration avec le backend
 
-    - Formulaires de connexion et d'inscription (`src/components/LoginForm.tsx`, `src/components/RegisterForm.tsx`)
-    - Contexte d'authentification pour stocker le token et les informations utilisateur
-    - Mécanismes pour appeler des routes protégées (ex. `GET /api/users/me`)
-    - Exemples de tests avec `vitest` / React Testing Library sous `src/test`
+Le frontend attend que l'API backend soit accessible. L'URL de base de l'API est configurée dans `src/api/client.ts` — ajustez-la si nécessaire pour pointer vers votre serveur backend.
 
-    ## Démarrage (local)
+URL backend typique en local :
 
-    1. Installer les dépendances :
+```
+http://localhost:3000
+```
 
-    ```
-    npm install
-    ```
+Si vous lancez les deux services via Docker Compose, assurez-vous que le frontend peut joindre l'adresse exposée par le backend, ou exécutez le frontend localement et pointez-le sur `http://localhost:3000`.
 
-    2. Lancer le serveur de développement :
+## Scripts utiles
 
-    ```
-    npm run dev
-    ```
+- `npm run dev` — démarrer le serveur Vite en dev
+- `npm run build` — construire les fichiers pour la production
+- `npm run preview` — prévisualiser localement le build de production
+- `npm test` — exécuter les tests (voir `package.json`)
 
-    3. Ouvrir l'application dans le navigateur (Vite affichera l'URL, généralement `http://localhost:5173`).
+## Flux d'authentification (résumé)
 
-    ## Intégration avec le backend
+1. L'utilisateur envoie ses identifiants à `POST /api/auth/login` (géré par `src/api/auth.ts`).
+2. Le backend renvoie un token JWT d'accès (et éventuellement un refresh token).
+3. Le frontend conserve le token en mémoire via `AuthContext` et l'envoie dans l'en-tête `Authorization: Bearer <token>` pour les requêtes protégées.
 
-    Le frontend attend que l'API backend soit accessible. L'URL de base de l'API est configurée dans `src/api/client.ts` — ajustez-la si nécessaire pour pointer vers votre serveur backend.
+Pour la production, envisagez d'utiliser des cookies `httpOnly` et sécurisés pour les refresh tokens plutôt que le stockage local.
 
-    URL backend typique en local :
+## Tests
 
-    ```
-    http://localhost:3000
-    ```
+- Les tests unitaires et composants se trouvent sous `src/test`. Lancez-les avec :
 
-    Si vous lancez les deux services via Docker Compose, assurez-vous que le frontend peut joindre l'adresse exposée par le backend, ou exécutez le frontend localement et pointez-le sur `http://localhost:3000`.
+```
+npm test
+```
 
-    ## Scripts utiles
+## Docker (optionnel)
 
-    - `npm run dev` — démarrer le serveur Vite en dev
-    - `npm run build` — construire les fichiers pour la production
-    - `npm run preview` — prévisualiser localement le build de production
-    - `npm test` — exécuter les tests (voir `package.json`)
+Vous pouvez conteneuriser le frontend ou servir les fichiers construits via un serveur statique. Pour le développement local, exécuter Vite est plus rapide.
 
-    ## Flux d'authentification (résumé)
+Pour construire le bundle de production :
 
-    1. L'utilisateur envoie ses identifiants à `POST /api/auth/login` (géré par `src/api/auth.ts`).
-    2. Le backend renvoie un token JWT d'accès (et éventuellement un refresh token).
-    3. Le frontend conserve le token en mémoire via `AuthContext` et l'envoie dans l'en-tête `Authorization: Bearer <token>` pour les requêtes protégées.
+```
+npm run build
+```
 
-    Pour la production, envisagez d'utiliser des cookies `httpOnly` et sécurisés pour les refresh tokens plutôt que le stockage local.
+Pour prévisualiser le build de production :
 
-    ## Tests
+```
+npm run preview
+```
 
-    - Les tests unitaires et composants se trouvent sous `src/test`. Lancez-les avec :
+## Où regarder dans le code
 
-    ```
-    npm test
-    ```
+- Entrée de l'application : `src/main.tsx` et `src/App.tsx`
+- Client API : `src/api/client.ts` et `src/api/auth.ts`
+- Contexte d'auth : `src/context/AuthContext.tsx`
+- Composants : `src/components/LoginForm.tsx`, `src/components/RegisterForm.tsx`
 
-    ## Docker (optionnel)
+---
 
-    Vous pouvez conteneuriser le frontend ou servir les fichiers construits via un serveur statique. Pour le développement local, exécuter Vite est plus rapide.
+Ce frontend est conçu pour être utilisé avec le backend `NodeJS-setup-back` afin d'illustrer un flux d'authentification minimal et complet. Ajustez les URL et la configuration d'environnement pour votre déploiement.
 
-    Pour construire le bundle de production :
+```
 
-    ```
-    npm run build
-    ```
-
-    Pour prévisualiser le build de production :
-
-    ```
-    npm run preview
-    ```
-
-    ## Où regarder dans le code
-
-    - Entrée de l'application : `src/main.tsx` et `src/App.tsx`
-    - Client API : `src/api/client.ts` et `src/api/auth.ts`
-    - Contexte d'auth : `src/context/AuthContext.tsx`
-    - Composants : `src/components/LoginForm.tsx`, `src/components/RegisterForm.tsx`
-
-    ---
-    Ce frontend est conçu pour être utilisé avec le backend `NodeJS-setup-back` afin d'illustrer un flux d'authentification minimal et complet. Ajustez les URL et la configuration d'environnement pour votre déploiement.
-````
+```
