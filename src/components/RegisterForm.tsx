@@ -42,6 +42,7 @@ export default function RegisterForm() {
       onSubmit={onSubmit}
       style={{ maxWidth: 360, margin: "2rem auto", textAlign: "left" }}
     >
+      {/* Formulaire d'inscription — validations basiques côté client */}
       <h2>Register</h2>
       <div style={{ marginBottom: "0.75rem" }}>
         <label htmlFor="email">Email</label>
@@ -65,6 +66,7 @@ export default function RegisterForm() {
           style={{ width: "100%", padding: "0.5rem", marginTop: "0.25rem" }}
         />
       </div>
+      {/* Affiche les erreurs de validation ou messages renvoyés par l'API */}
       {error && (
         <div style={{ color: "crimson", marginBottom: "0.75rem" }}>{error}</div>
       )}

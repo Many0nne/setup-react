@@ -10,7 +10,6 @@ describe("App", () => {
         <App />
       </AuthProvider>,
     );
-    // Verify the app renders with auth forms when not logged in
     expect(document.body).toBeInTheDocument();
   });
 });
