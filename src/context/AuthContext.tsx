@@ -18,6 +18,10 @@ export interface AuthContextValue {
   refresh: () => Promise<void>;
 }
 
+// Contexte d'authentification client
+// Stocke l'utilisateur et le token JWT en mémoire côté client.
+// Le refresh est appelé au premier rendu pour tenter de récupérer
+// une session via le cookie de refresh (si le serveur en a un).
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -49,14 +53,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(usr);
   }, []);
 
-  // Restore session on page load using HttpOnly refresh cookie
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true;
-      // Use setTimeout to avoid setState in effect warning
       setTimeout(() => {
+        // Tentative de restauration de session au chargement (via cookie refresh)
         refresh().catch(() => {
-          // ignore failures; user remains logged out
+          // Échec silencieux : utilisateur non connecté
         });
       }, 0);
     }

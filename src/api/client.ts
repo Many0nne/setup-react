@@ -27,6 +27,9 @@ export async function request<TResponse, TBody = unknown>(
     credentials: "include",
   });
 
+  // `credentials: 'include'` permet d'envoyer/recevoir les cookies (refresh token)
+  // Les erreurs HTTP sont transformées en exceptions JS avec un message utile.
+
   const contentType = res.headers.get("content-type") || "";
   const isJson = contentType.includes("application/json");
   const data = isJson ? await res.json() : await res.text();

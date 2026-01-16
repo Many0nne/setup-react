@@ -38,6 +38,7 @@ export default function LoginForm() {
       onSubmit={onSubmit}
       style={{ maxWidth: 360, margin: "2rem auto", textAlign: "left" }}
     >
+      {/* Formulaire de connexion simple */}
       <h2>Login</h2>
       <div style={{ marginBottom: "0.75rem" }}>
         <label htmlFor="email">Email</label>
@@ -62,6 +63,7 @@ export default function LoginForm() {
         />
       </div>
       {error && (
+        // Affichage simple des erreurs dues à la validation ou à la requête
         <div style={{ color: "crimson", marginBottom: "0.75rem" }}>{error}</div>
       )}
       <button type="submit" disabled={loading}>
